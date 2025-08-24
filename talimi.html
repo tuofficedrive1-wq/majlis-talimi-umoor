@@ -2,24 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Majlis Talimi Umoor India</title>
+  <title>Talimi Zimedaran — Profile Cards</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
-<div class="navbar">
-  <a href="index.html">Home</a>
-  <a href="talimi.html">Talimi Zimedaran</a>
-  <a href="jaiza.html">Jaiza Report</a>
-  <a href="mahana.html">Mahana Test Report</a>
-  <a href="ibtidaiya.html">Ibtidaiya Result</a>
-  <a href="elamiya.html">Elamiya</a>
-</div>
+  <section class="talimi-cards" id="cards-container">
+    <!-- Profile Cards will be inserted here -->
+  </section>
 
-  <div class="container">
-    <h1>Talimi Zimedaran</h1><p>Details about Talimi Zimedaran...</p>
-  </div>
-  <script src="script.js"></script>
+  <script>
+    async function fetchTalimiData() {
+      const SHEET_ID = "1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY";
+      const SHEET_NAME = "Talimi";
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&tq=${encodeURIComponent("select *")}`;
+      
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        const text = await res.text();
+        const json = JSON.parse(text.match(/\\{.*\\}/s)[0]);
+        const cols = json.table.cols.map(c => c.label || c.id || "");
+        const rows = json.table.rows.map(r => {
+          const obj = {};
+          r.c.forEach((c, i) => obj[cols[i]] = c ? c.v : "");
+          return obj;
+        });
+        renderCards(rows);
+      } catch (err) {
+        console.error("Error loading Talimi data:", err);
+        document.getElementById("cards-container").innerHTML = `<p style="color:red;">Error loading data.</p>`;
+      }
+    }
+
+    function renderCards(data) {
+      const container = document.getElementById("cards-container");
+      container.innerHTML = data.map(item => `
+        <div class="card">
+          <h3>${escapeHtml(item.Naam)}</h3>
+          <p><strong>Region:</strong> ${escapeHtml(item.Region)}</p>
+          <p><strong>Contact:</strong> <a href="tel:${item.Contact}">${escapeHtml(item.Contact)}</a></p>
+          <p><strong>Email:</strong> <a href="mailto:${escapeHtml(item["Email Id"])}">${escapeHtml(item["Email Id"])}</a></p>
+          <hr>
+          <p><strong>Jamiat:</strong> ${escapeHtml(item.Jamiaat)}</p>
+          <p><strong>Madani Asatiza:</strong> ${escapeHtml(item["Madani Asatiza"])}</p>
+          <p><strong>Qari Sahiban:</strong> ${escapeHtml(item["Qari Sahiban"])}</p>
+          <p><strong>Asri Teachers:</strong> ${escapeHtml(item["Asri Teachers"])}</p>
+          <p><strong>Kul Talba:</strong> ${escapeHtml(item["Kul Talba"])}</p>
+        </div>
+      `).join("");
+    }
+
+    function escapeHtml(s) {
+      if (!s) return "";
+      return String(s).replace(/[&<>"'\/]/g, m => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+        "/": "&#x2F;"
+      })[m]);
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchTalimiData);
+  </script>
 </body>
 </html>
