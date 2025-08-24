@@ -2,69 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Talimi Zimedaran — Profile Cards</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talimi Zimmedaran</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .card h2 {
+      margin: 0 0 10px;
+      color: #2c3e50;
+    }
+    .info {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .info strong {
+      display: inline-block;
+      width: 120px;
+      color: #555;
+    }
+    .email a {
+      color: #2980b9;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-  <section class="talimi-cards" id="cards-container">
-    <!-- Profile Cards will be inserted here -->
-  </section>
+  <h1>Talimi Zimmedaran</h1>
+  <div id="zimmedarGrid" class="grid"></div>
 
   <script>
-    async function fetchTalimiData() {
-      const SHEET_ID = "1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY";
-      const SHEET_NAME = "Talimi";
-      const url = `https://docs.google.com/spreadsheets/d/${1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(Talimi)}&tq=${encodeURIComponent("select *")}`;
-      
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
-        const text = await res.text();
-        const json = JSON.parse(text.match(/\\{.*\\}/s)[0]);
-        const cols = json.table.cols.map(c => c.label || c.id || "");
-        const rows = json.table.rows.map(r => {
-          const obj = {};
-          r.c.forEach((c, i) => obj[cols[i]] = c ? c.v : "");
-          return obj;
-        });
-        renderCards(rows);
-      } catch (err) {
-        console.error("Error loading Talimi data:", err);
-        document.getElementById("cards-container").innerHTML = `<p style="color:red;">Error loading data.</p>`;
-      }
+    async function loadData() {
+      const url = "https://docs.google.com/spreadsheets/d/1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY/gviz/tq?tqx=out:json&sheet=Talimi";
+      const res = await fetch(url);
+      const text = await res.text();
+
+      // JSON cleanup (Google Sheet JSON unwanted prefix/suffix hatao)
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      const rows = json.table.rows;
+
+      const grid = document.getElementById("zimmedarGrid");
+      grid.innerHTML = "";
+
+      rows.forEach((row, i) => {
+        if (i === 0) return; // header skip
+
+        const data = row.c.map(c => c ? c.v : "");
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h2>${data[0]}</h2>
+          <div class="info"><strong>Region:</strong> ${data[1]}</div>
+          <div class="info"><strong>Contact:</strong> ${data[2]}</div>
+          <div class="info email"><strong>Email:</strong> <a href="mailto:${data[3]}">${data[3]}</a></div>
+          <div class="info"><strong>Jamiaat:</strong> ${data[4]}</div>
+          <div class="info"><strong>Madani Asatiza:</strong> ${data[5]}</div>
+          <div class="info"><strong>Qari Sahib:</strong> ${data[6]}</div>
+          <div class="info"><strong>Asri Teachers:</strong> ${data[7]}</div>
+          <div class="info"><strong>Kul Talba:</strong> ${data[8]}</div>
+        `;
+        grid.appendChild(card);
+      });
     }
 
-    function renderCards(data) {
-      const container = document.getElementById("cards-container");
-      container.innerHTML = data.map(item => `
-        <div class="card">
-          <h3>${escapeHtml(item.Naam)}</h3>
-          <p><strong>Region:</strong> ${escapeHtml(item.Region)}</p>
-          <p><strong>Contact:</strong> <a href="tel:${item.Contact}">${escapeHtml(item.Contact)}</a></p>
-          <p><strong>Email:</strong> <a href="mailto:${escapeHtml(item["Email Id"])}">${escapeHtml(item["Email Id"])}</a></p>
-          <hr>
-          <p><strong>Jamiat:</strong> ${escapeHtml(item.Jamiaat)}</p>
-          <p><strong>Madani Asatiza:</strong> ${escapeHtml(item["Madani Asatiza"])}</p>
-          <p><strong>Qari Sahiban:</strong> ${escapeHtml(item["Qari Sahiban"])}</p>
-          <p><strong>Asri Teachers:</strong> ${escapeHtml(item["Asri Teachers"])}</p>
-          <p><strong>Kul Talba:</strong> ${escapeHtml(item["Kul Talba"])}</p>
-        </div>
-      `).join("");
-    }
-
-    function escapeHtml(s) {
-      if (!s) return "";
-      return String(s).replace(/[&<>"'\/]/g, m => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;",
-        "/": "&#x2F;"
-      })[m]);
-    }
-
-    document.addEventListener("DOMContentLoaded", fetchTalimiData);
+    loadData();
   </script>
 </body>
 </html>
