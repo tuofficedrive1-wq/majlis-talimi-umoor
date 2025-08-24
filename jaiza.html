@@ -3,23 +3,164 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Majlis Talimi Umoor India</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Majlis Talimi Umoor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+    /* Navbar */
+    .navbar {
+      background: #0a3d62;
+      color: white;
+      padding: 15px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      z-index: 1000;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    /* Page content */
+    .content {
+      margin-top: 80px;
+      padding: 20px;
+    }
+    /* Filter dropdown */
+    .filter-box {
+      margin-bottom: 20px;
+    }
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    /* Cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
+      color: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 20px;
+    }
+    .card p {
+      margin: 5px 0;
+      font-size: 15px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      background: #ffeaa7;
+      color: #2d3436;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  
-<div class="navbar">
-  <a href="index.html">Home</a>
-  <a href="talimi.html">Talimi Zimedaran</a>
-  <a href="jaiza.html">Jaiza Report</a>
-  <a href="mahana.html">Mahana Test Report</a>
-  <a href="ibtidaiya.html">Ibtidaiya Result</a>
-  <a href="elamiya.html">Elamiya</a>
-</div>
-
-  <div class="container">
-    <h1>Jaiza Report</h1><p>Details about Jaiza Report...</p>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="#">Home</a>
+    <a href="#">Talimi Zimmedaran</a>
+    <a href="#">Jaiza Report</a>
+    <a href="#">Mahana Test Report</a>
+    <a href="#">Ibtidaiya Result</a>
+    <a href="#">Elamiya</a>
   </div>
-  <script src="script.js"></script>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="filter-box">
+      <label for="monthFilter"><b>Select Month:</b> </label>
+      <select id="monthFilter" onchange="filterByMonth()">
+        <option value="May">May</option>
+        <option value="June">June</option>
+        <option value="July">July</option>
+        <option value="Aug">August</option>
+        <option value="Sep">September</option>
+        <option value="Oct">October</option>
+        <option value="Nov">November</option>
+      </select>
+    </div>
+
+    <div id="cardsContainer" class="cards-grid"></div>
+  </div>
+
+  <script>
+    const sheetURL = "https://docs.google.com/spreadsheets/d/1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY/gviz/tq?tqx=out:json";
+
+    async function fetchData() {
+      const res = await fetch(sheetURL);
+      const text = await res.text();
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      return json.table.rows;
+    }
+
+    async function filterByMonth() {
+      const month = document.getElementById("monthFilter").value;
+      const rows = await fetchData();
+      const container = document.getElementById("cardsContainer");
+      container.innerHTML = "";
+
+      rows.forEach(r => {
+        const name = r.c[0]?.v || "";
+        const region = r.c[1]?.v || "";
+        const jamia = r.c[2]?.v || "";
+        const value = r.c[getMonthIndex(month)]?.v || "-";
+
+        let card = `
+          <div class="card">
+            <div class="icon">📅</div>
+            <h3>${name}</h3>
+            <p><b>Region:</b> ${region}</p>
+            <p><b>Jamia:</b> ${jamia}</p>
+            <p><b>${month} Data:</b> <span class="badge">${value}</span></p>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    }
+
+    function getMonthIndex(month) {
+      const map = {
+        "May": 3,
+        "June": 5,
+        "July": 7,
+        "Aug": 9,
+        "Sep": 11,
+        "Oct": 13,
+        "Nov": 15
+      };
+      return map[month];
+    }
+
+    // Default load May
+    window.onload = () => filterByMonth();
+  </script>
 </body>
 </html>
