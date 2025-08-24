@@ -14,7 +14,7 @@
     async function fetchTalimiData() {
       const SHEET_ID = "1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY";
       const SHEET_NAME = "Talimi";
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&tq=${encodeURIComponent("select *")}`;
+      const url = `https://docs.google.com/spreadsheets/d/${1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(Talimi)}&tq=${encodeURIComponent("select *")}`;
       
       try {
         const res = await fetch(url);
