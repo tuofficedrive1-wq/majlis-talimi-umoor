@@ -1,166 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Majlis Talimi Umoor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jaiza Report — Majlis Talimi Umoor India</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       background: #f4f6f9;
     }
-    /* Navbar */
-    .navbar {
-      background: #0a3d62;
-      color: white;
+    nav {
+      background: #2c3e50;
       padding: 15px;
-      position: fixed;
-      top: 0;
-      width: 100%;
+      color: #fff;
       display: flex;
-      justify-content: space-around;
-      z-index: 1000;
+      justify-content: center;
+      gap: 20px;
     }
-    .navbar a {
-      color: white;
+    nav a {
+      color: #fff;
       text-decoration: none;
       font-weight: bold;
     }
-    /* Page content */
-    .content {
-      margin-top: 80px;
-      padding: 20px;
-    }
-    /* Filter dropdown */
-    .filter-box {
-      margin-bottom: 20px;
+    .filters {
+      margin: 20px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
     }
     select {
       padding: 8px;
-      font-size: 16px;
-      border-radius: 6px;
+      border-radius: 5px;
       border: 1px solid #ccc;
     }
-    /* Cards grid */
-    .cards-grid {
+    .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
+      padding: 20px;
     }
     .card {
-      background: linear-gradient(135deg, #74b9ff, #a29bfe);
-      color: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 15px;
       transition: transform 0.2s;
     }
     .card:hover {
       transform: scale(1.03);
     }
     .card h3 {
-      margin: 0 0 10px 0;
-      font-size: 20px;
+      margin: 0;
+      color: #2c3e50;
     }
     .card p {
       margin: 5px 0;
-      font-size: 15px;
-    }
-    .badge {
-      display: inline-block;
-      padding: 6px 12px;
-      background: #ffeaa7;
-      color: #2d3436;
-      border-radius: 12px;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .icon {
-      font-size: 30px;
-      margin-bottom: 10px;
+      font-size: 14px;
+      color: #555;
     }
   </style>
 </head>
 <body>
+
   <!-- Navbar -->
-  <div class="navbar">
-    <a href="#">Home</a>
-    <a href="#">Talimi Zimmedaran</a>
-    <a href="#">Jaiza Report</a>
-    <a href="#">Mahana Test Report</a>
-    <a href="#">Ibtidaiya Result</a>
-    <a href="#">Elamiya</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="talimi.html">Talimi Zimmedaran</a>
+    <a href="jaiza.html">Jaiza Report</a>
+    <a href="mahana.html">Mahana Test Report</a>
+    <a href="ibtidaiya.html">Ibtidaiya Result</a>
+    <a href="elamiya.html">Elamiya</a>
+  </nav>
+
+  <!-- Filters -->
+  <div class="filters">
+    <select id="monthFilter">
+      <option value="">All Months</option>
+      <option>January</option>
+      <option>February</option>
+      <option>March</option>
+      <option>April</option>
+      <option>May</option>
+      <option>June</option>
+      <option>July</option>
+      <option>August</option>
+      <option>September</option>
+      <option>October</option>
+      <option>November</option>
+      <option>December</option>
+    </select>
+
+    <select id="regionFilter">
+      <option value="">All Regions</option>
+    </select>
+
+    <select id="zimmedarFilter">
+      <option value="">All Zimmedaran</option>
+    </select>
   </div>
 
-  <!-- Content -->
-  <div class="content">
-    <div class="filter-box">
-      <label for="monthFilter"><b>Select Month:</b> </label>
-      <select id="monthFilter" onchange="filterByMonth()">
-        <option value="May">May</option>
-        <option value="June">June</option>
-        <option value="July">July</option>
-        <option value="Aug">August</option>
-        <option value="Sep">September</option>
-        <option value="Oct">October</option>
-        <option value="Nov">November</option>
-      </select>
-    </div>
-
-    <div id="cardsContainer" class="cards-grid"></div>
-  </div>
+  <!-- Cards -->
+  <div class="cards" id="cardsContainer"></div>
 
   <script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/1_7xTzAI1_BT1peRklxIUAahDtNc2eJMUyaNhUFeLKU0/edit?gid=0#gid=0";
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY/gviz/tq?tqx=out:json";
 
-    async function fetchData() {
-      const res = await fetch(sheetURL);
-      const text = await res.text();
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-      return json.table.rows;
-    }
+    fetch(sheetUrl)
+      .then(res => res.text())
+      .then(data => {
+        const json = JSON.parse(data.substr(47).slice(0, -2));
+        const rows = json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
 
-    async function filterByMonth() {
-      const month = document.getElementById("monthFilter").value;
-      const rows = await fetchData();
-      const container = document.getElementById("cardsContainer");
-      container.innerHTML = "";
+        const container = document.getElementById("cardsContainer");
+        const zimmedarSelect = document.getElementById("zimmedarFilter");
+        const regionSelect = document.getElementById("regionFilter");
+        const monthSelect = document.getElementById("monthFilter");
 
-      rows.forEach(r => {
-        const name = r.c[0]?.v || "";
-        const region = r.c[1]?.v || "";
-        const jamia = r.c[2]?.v || "";
-        const value = r.c[getMonthIndex(month)]?.v || "-";
+        let zimmedaran = new Set();
+        let regions = new Set();
 
-        let card = `
-          <div class="card">
-            <div class="icon">📅</div>
-            <h3>${name}</h3>
-            <p><b>Region:</b> ${region}</p>
-            <p><b>Jamia:</b> ${jamia}</p>
-            <p><b>${month} Data:</b> <span class="badge">${value}</span></p>
-          </div>
-        `;
-        container.innerHTML += card;
+        function renderCards() {
+          container.innerHTML = "";
+          const selectedZ = zimmedarSelect.value;
+          const selectedR = regionSelect.value;
+          const selectedM = monthSelect.value;
+
+          rows.forEach(row => {
+            let [naam, region, contact, email, jam, asatiza, qari, teachers, tulaba, month] = row;
+
+            if ((selectedZ && naam !== selectedZ) ||
+                (selectedR && region !== selectedR) ||
+                (selectedM && month !== selectedM)) {
+              return;
+            }
+
+            let card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+              <h3>${naam}</h3>
+              <p><b>Region:</b> ${region}</p>
+              <p><b>Contact:</b> ${contact}</p>
+              <p><b>Email:</b> ${email}</p>
+              <p><b>Jamiat:</b> ${jam}</p>
+              <p><b>Madani Asatiza:</b> ${asatiza}</p>
+              <p><b>Qari Sahibaan:</b> ${qari}</p>
+              <p><b>Asri Teachers:</b> ${teachers}</p>
+              <p><b>Kul Talba:</b> ${tulaba}</p>
+              <p><b>Month:</b> ${month}</p>
+            `;
+            container.appendChild(card);
+
+            zimmedaran.add(naam);
+            regions.add(region);
+          });
+
+          zimmedarSelect.innerHTML = '<option value="">All Zimmedaran</option>' +
+            [...zimmedaran].map(z => `<option>${z}</option>`).join("");
+
+          regionSelect.innerHTML = '<option value="">All Regions</option>' +
+            [...regions].map(r => `<option>${r}</option>`).join("");
+        }
+
+        zimmedarSelect.addEventListener("change", renderCards);
+        regionSelect.addEventListener("change", renderCards);
+        monthSelect.addEventListener("change", renderCards);
+
+        renderCards();
       });
-    }
-
-    function getMonthIndex(month) {
-      const map = {
-        "May": 3,
-        "June": 5,
-        "July": 7,
-        "Aug": 9,
-        "Sep": 11,
-        "Oct": 13,
-        "Nov": 15
-      };
-      return map[month];
-    }
-
-    // Default load May
-    window.onload = () => filterByMonth();
   </script>
+
 </body>
 </html>
