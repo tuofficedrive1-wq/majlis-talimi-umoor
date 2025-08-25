@@ -1,90 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Talimi Zimmedaran</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f6fa;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      background: #f4f6f9;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    nav {
+      background: #2c3e50;
+      padding: 15px;
+      color: #fff;
+      display: flex;
+      justify-content: center;
       gap: 20px;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .filters {
+      margin: 20px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
     }
     .card {
       background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 15px;
+      transition: transform 0.2s;
     }
-    .card h2 {
-      margin: 0 0 10px;
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .card h3 {
+      margin: 0;
       color: #2c3e50;
     }
-    .info {
+    .card p {
       margin: 5px 0;
       font-size: 14px;
-    }
-    .info strong {
-      display: inline-block;
-      width: 120px;
       color: #555;
-    }
-    .email a {
-      color: #2980b9;
-      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h1>Talimi Zimmedaran</h1>
-  <div id="zimmedarGrid" class="grid"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="talimi.html">Talimi Zimmedaran</a>
+    <a href="jaiza.html">Jaiza Report</a>
+    <a href="mahana.html">Mahana Test Report</a>
+    <a href="ibtidaiya.html">Ibtidaiya Result</a>
+    <a href="elamiya.html">Elamiya</a>
+  </nav>
+
+  <!-- Filters -->
+    <select id="regionFilter">
+      <option value="">All Regions</option>
+    </select>
+
+    <select id="zimmedarFilter">
+      <option value="">All Zimmedaran</option>
+    </select>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards" id="cardsContainer"></div>
 
   <script>
-    async function loadData() {
-      const url = "https://docs.google.com/spreadsheets/d/1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY/gviz/tq?tqx=out:json&sheet=Talimi";
-      const res = await fetch(url);
-      const text = await res.text();
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY/gviz/tq?tqx=out:json";
 
-      // JSON cleanup (Google Sheet JSON unwanted prefix/suffix hatao)
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-      const rows = json.table.rows;
+    fetch(sheetUrl)
+      .then(res => res.text())
+      .then(data => {
+        const json = JSON.parse(data.substr(47).slice(0, -2));
+        const rows = json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
 
-      const grid = document.getElementById("zimmedarGrid");
-      grid.innerHTML = "";
+        const container = document.getElementById("cardsContainer");
+        const zimmedarSelect = document.getElementById("zimmedarFilter");
+        const regionSelect = document.getElementById("regionFilter");
 
-      rows.forEach((row, i) => {
-        if (i === 0) return; // header skip
+        let zimmedaran = new Set();
+        let regions = new Set();
 
-        const data = row.c.map(c => c ? c.v : "");
+        function renderCards() {
+          container.innerHTML = "";
+          const selectedZ = zimmedarSelect.value;
+          const selectedR = regionSelect.value;
 
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <h2>${data[0]}</h2>
-          <div class="info"><strong>Region:</strong> ${data[1]}</div>
-          <div class="info"><strong>Contact:</strong> ${data[2]}</div>
-          <div class="info email"><strong>Email:</strong> <a href="mailto:${data[3]}">${data[3]}</a></div>
-          <div class="info"><strong>Jamiaat:</strong> ${data[4]}</div>
-          <div class="info"><strong>Madani Asatiza:</strong> ${data[5]}</div>
-          <div class="info"><strong>Qari Sahib:</strong> ${data[6]}</div>
-          <div class="info"><strong>Asri Teachers:</strong> ${data[7]}</div>
-          <div class="info"><strong>Kul Talba:</strong> ${data[8]}</div>
-        `;
-        grid.appendChild(card);
+          rows.forEach(row => {
+            let [naam, region, contact, email, jam, asatiza, qari, teachers, tulaba, month] = row;
+
+            if ((selectedZ && naam !== selectedZ) ||
+                (selectedR && region !== selectedR) ||
+                (selectedM && month !== selectedM)) {
+              return;
+            }
+
+            let card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+              <h3>${naam}</h3>
+              <p><b>Region:</b> ${region}</p>
+              <p><b>Contact:</b> ${contact}</p>
+              <p><b>Email:</b> ${email}</p>
+              <p><b>Jamiat:</b> ${jam}</p>
+              <p><b>Madani Asatiza:</b> ${asatiza}</p>
+              <p><b>Qari Sahibaan:</b> ${qari}</p>
+              <p><b>Asri Teachers:</b> ${teachers}</p>
+              <p><b>Kul Talba:</b> ${tulaba}</p>
+              <p><b>Month:</b> ${month}</p>
+            `;
+            container.appendChild(card);
+
+            zimmedaran.add(naam);
+            regions.add(region);
+          });
+
+          zimmedarSelect.innerHTML = '<option value="">All Zimmedaran</option>' +
+            [...zimmedaran].map(z => `<option>${z}</option>`).join("");
+
+          regionSelect.innerHTML = '<option value="">All Regions</option>' +
+            [...regions].map(r => `<option>${r}</option>`).join("");
+        }
+
+        zimmedarSelect.addEventListener("change", renderCards);
+        regionSelect.addEventListener("change", renderCards);
+        monthSelect.addEventListener("change", renderCards);
+
+        renderCards();
       });
-    }
-
-    loadData();
   </script>
+
 </body>
 </html>
