@@ -105,13 +105,27 @@
         let zimmedaran = new Set();
         let regions = new Set();
 
+        // unique zimmedaran aur regions collect karna
+        rows.forEach(row => {
+          let [naam, region] = row;
+          if (naam) zimmedaran.add(naam);
+          if (region) regions.add(region);
+        });
+
+        // dropdowns fill karna
+        zimmedarSelect.innerHTML = '<option value="">All Zimmedaran</option>' +
+          [...zimmedaran].map(z => `<option value="${z}">${z}</option>`).join("");
+
+        regionSelect.innerHTML = '<option value="">All Regions</option>' +
+          [...regions].map(r => `<option value="${r}">${r}</option>`).join("");
+
         function renderCards() {
           container.innerHTML = "";
           const selectedZ = zimmedarSelect.value;
           const selectedR = regionSelect.value;
 
           rows.forEach(row => {
-            let [naam, region, contact, email, jam, asatiza, qari, teachers, tulaba, month] = row;
+            let [naam, region, contact, email, jam, asatiza, qari, teachers, tulaba] = row;
 
             if ((selectedZ && naam !== selectedZ) ||
                 (selectedR && region !== selectedR)) {
@@ -130,21 +144,12 @@
               <p><b>Qari Sahibaan:</b> ${qari}</p>
               <p><b>Asri Teachers:</b> ${teachers}</p>
               <p><b>Kul Talba:</b> ${tulaba}</p>
-              <p><b>Month:</b> ${month}</p>
             `;
             container.appendChild(card);
-
-            zimmedaran.add(naam);
-            regions.add(region);
           });
-
-          zimmedarSelect.innerHTML = '<option value="">All Zimmedaran</option>' +
-            [...zimmedaran].map(z => `<option>${z}</option>`).join("");
-
-          regionSelect.innerHTML = '<option value="">All Regions</option>' +
-            [...regions].map(r => `<option>${r}</option>`).join("");
         }
 
+        // dropdown change hone par render karna
         zimmedarSelect.addEventListener("change", renderCards);
         regionSelect.addEventListener("change", renderCards);
 
