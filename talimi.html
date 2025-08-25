@@ -77,22 +77,6 @@
 
   <!-- Filters -->
   <div class="filters">
-    <select id="monthFilter">
-      <option value="">All Months</option>
-      <option>January</option>
-      <option>February</option>
-      <option>March</option>
-      <option>April</option>
-      <option>May</option>
-      <option>June</option>
-      <option>July</option>
-      <option>August</option>
-      <option>September</option>
-      <option>October</option>
-      <option>November</option>
-      <option>December</option>
-    </select>
-
     <select id="regionFilter">
       <option value="">All Regions</option>
     </select>
@@ -117,7 +101,6 @@
         const container = document.getElementById("cardsContainer");
         const zimmedarSelect = document.getElementById("zimmedarFilter");
         const regionSelect = document.getElementById("regionFilter");
-        const monthSelect = document.getElementById("monthFilter");
 
         let zimmedaran = new Set();
         let regions = new Set();
@@ -126,14 +109,12 @@
           container.innerHTML = "";
           const selectedZ = zimmedarSelect.value;
           const selectedR = regionSelect.value;
-          const selectedM = monthSelect.value;
 
           rows.forEach(row => {
             let [naam, region, contact, email, jam, asatiza, qari, teachers, tulaba, month] = row;
 
             if ((selectedZ && naam !== selectedZ) ||
-                (selectedR && region !== selectedR) ||
-                (selectedM && month !== selectedM)) {
+                (selectedR && region !== selectedR)) {
               return;
             }
 
@@ -166,7 +147,6 @@
 
         zimmedarSelect.addEventListener("change", renderCards);
         regionSelect.addEventListener("change", renderCards);
-        monthSelect.addEventListener("change", renderCards);
 
         renderCards();
       });
