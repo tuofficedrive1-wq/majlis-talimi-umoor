@@ -1,176 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jaiza Report — Majlis Talimi Umoor India</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f6f9;
-    }
-    nav {
-      background: #2c3e50;
-      padding: 15px;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .filters {
-      margin: 20px;
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-    }
-    select {
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 15px;
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: scale(1.03);
-    }
-    .card h3 {
-      margin: 0;
-      color: #2c3e50;
-    }
-    .card p {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #555;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jaiza Report — Majlis Talimi Umoor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
 </head>
-<body>
+<body class="p-8">
+    <div id="app" class="max-w-7xl mx-auto">
+        <!-- Dashboard Header -->
+        <header class="bg-green-700 text-white p-4 rounded-t-lg shadow-md flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold">Majlis Talimi Umoor</h1>
+            <nav class="hidden md:flex space-x-4 text-sm font-medium">
+                <a href="index.html" class="hover:underline">Home</a>
+                <a href="talimi.html" class="hover:underline">Talimi Zimmedaran</a>
+                <a href="jaiza.html" class="underline font-bold">Jaiza Report</a>
+                <a href="mahana.html" class="hover:underline">Mahana Test Report</a>
+                <a href="elamiya.html" class="hover:underline">Elamiya</a>
+                <a href="ibtidaiya.html" class="hover:underline">Result</a>
+            </nav>
+        </header>
 
-  <!-- Navbar -->
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="talimi.html">Talimi Zimmedaran</a>
-    <a href="jaiza.html">Jaiza Report</a>
-    <a href="mahana.html">Mahana Test Report</a>
-    <a href="ibtidaiya.html">Ibtidaiya Result</a>
-    <a href="elamiya.html">Elamiya</a>
-  </nav>
+        <!-- Main Content -->
+        <main class="bg-white p-6 rounded-b-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Jaiza Report</h2>
 
-  <!-- Filters -->
-  <div class="filters">
-    <select id="monthFilter">
-      <option value="">All Months</option>
-      <option>January</option>
-      <option>February</option>
-      <option>March</option>
-      <option>April</option>
-      <option>May</option>
-      <option>June</option>
-      <option>July</option>
-      <option>August</option>
-      <option>September</option>
-      <option>October</option>
-      <option>November</option>
-      <option>December</option>
-    </select>
+            <!-- Filters Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div>
+                    <label for="region-filter" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+                    <select id="region-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="zimmedar-filter" class="block text-sm font-medium text-gray-700 mb-1">Talimi Zimmedar</label>
+                    <select id="zimmedar-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        <option value="all">All</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="month-filter" class="block text-sm font-medium text-gray-700 mb-1">Month</label>
+                    <select id="month-filter" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        <option value="all">All</option>
+                    </select>
+                </div>
+            </div>
 
-    <select id="regionFilter">
-      <option value="">All Regions</option>
-    </select>
+            <!-- Key Metrics Section -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gray-100 p-6 rounded-xl shadow-inner text-center">
+                    <div id="total-jaiza" class="text-4xl font-bold text-gray-800">...</div>
+                    <div class="text-sm text-gray-500 mt-2">Total Jaiza</div>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-xl shadow-inner text-center">
+                    <div id="total-visits" class="text-4xl font-bold text-gray-800">...</div>
+                    <div class="text-sm text-gray-500 mt-2">Total Visits</div>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-xl shadow-inner text-center">
+                    <div id="highest-jaiza" class="text-4xl font-bold text-gray-800">...</div>
+                    <div class="text-sm text-gray-500 mt-2">Highest Jaiza %</div>
+                </div>
+                <div class="bg-gray-100 p-6 rounded-xl shadow-inner text-center">
+                    <div id="average-jaiza" class="text-4xl font-bold text-gray-800">...</div>
+                    <div class="text-sm text-gray-500 mt-2">Average Jaiza %</div>
+                </div>
+            </div>
 
-    <select id="zimmedarFilter">
-      <option value="">All Zimmedaran</option>
-    </select>
-  </div>
+            <!-- Single Top 3 Jamia Section -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Top 3 Jamia</h3>
+                <ul id="top-3-list" class="list-disc list-inside space-y-2 text-gray-600">
+                    <li>...</li>
+                </ul>
+            </div>
+        </main>
+    </div>
 
-  <!-- Cards -->
-  <div class="cards" id="cardsContainer"></div>
+    <script>
+        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1_7xTzAI1_BT1peRklxIUAahDtNc2eJMUyaNhUFeLKU0/gviz/tq?tqx=out:json&gid=157725883';
+        let mainData = [];
 
-  <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/1YPwNNvMgLb8QjovsK29nwZ-scuwFb4ShvvKZfq1oWVY/gviz/tq?tqx=out:json";
+        document.addEventListener('DOMContentLoaded', () => { fetchData(); });
 
-    fetch(sheetUrl)
-      .then(res => res.text())
-      .then(data => {
-        const json = JSON.parse(data.substr(47).slice(0, -2));
-        const rows = json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
-
-        const container = document.getElementById("cardsContainer");
-        const zimmedarSelect = document.getElementById("zimmedarFilter");
-        const regionSelect = document.getElementById("regionFilter");
-        const monthSelect = document.getElementById("monthFilter");
-
-        let zimmedaran = new Set();
-        let regions = new Set();
-
-        function renderCards() {
-          container.innerHTML = "";
-          const selectedZ = zimmedarSelect.value;
-          const selectedR = regionSelect.value;
-          const selectedM = monthSelect.value;
-
-          rows.forEach(row => {
-            let [naam, region, contact, email, jam, asatiza, qari, teachers, tulaba, month] = row;
-
-            if ((selectedZ && naam !== selectedZ) ||
-                (selectedR && region !== selectedR) ||
-                (selectedM && month !== selectedM)) {
-              return;
+        async function fetchData() {
+            try {
+                const mainResponse = await fetch(GOOGLE_SHEET_URL);
+                const mainText = await mainResponse.text();
+                const mainJsonpData = mainText.substring(mainText.indexOf('{'), mainText.lastIndexOf('}') + 1);
+                const mainTableData = JSON.parse(mainJsonpData).table;
+                mainData = processSheetData(mainTableData.rows, mainTableData.cols.map(col => col.label));
+                updateDashboard(mainData);
+            } catch (error) {
+                console.error("Data fetch karne me nakam:", error);
+                document.getElementById('total-jaiza').innerText = 'Error';
+                document.getElementById('total-visits').innerText = 'Error';
+                document.getElementById('top-3-list').innerHTML = `<li>Data load karne me nakam.</li>`;
             }
-
-            let card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-              <h3>${naam}</h3>
-              <p><b>Region:</b> ${region}</p>
-              <p><b>Contact:</b> ${contact}</p>
-              <p><b>Email:</b> ${email}</p>
-              <p><b>Jamiat:</b> ${jam}</p>
-              <p><b>Madani Asatiza:</b> ${asatiza}</p>
-              <p><b>Qari Sahibaan:</b> ${qari}</p>
-              <p><b>Asri Teachers:</b> ${teachers}</p>
-              <p><b>Kul Talba:</b> ${tulaba}</p>
-              <p><b>Month:</b> ${month}</p>
-            `;
-            container.appendChild(card);
-
-            zimmedaran.add(naam);
-            regions.add(region);
-          });
-
-          zimmedarSelect.innerHTML = '<option value="">All Zimmedaran</option>' +
-            [...zimmedaran].map(z => `<option>${z}</option>`).join("");
-
-          regionSelect.innerHTML = '<option value="">All Regions</option>' +
-            [...regions].map(r => `<option>${r}</option>`).join("");
         }
 
-        zimmedarSelect.addEventListener("change", renderCards);
-        regionSelect.addEventListener("change", renderCards);
-        monthSelect.addEventListener("change", renderCards);
+        function processSheetData(rows, headers) {
+            const result = [];
+            rows.forEach(row => {
+                const rowData = {};
+                row.c.forEach((cell, index) => {
+                    rowData[headers[index]] = (cell && cell.v !== null) ? cell.v : null;
+                });
+                result.push(rowData);
+            });
+            return result;
+        }
 
-        renderCards();
-      });
-  </script>
+        function getMonthsFromData(data) {
+            if (data.length === 0) return [];
+            const months = data.map(row => row['Month']).filter(Boolean);
+            return [...new Set(months)];
+        }
 
+        function calculateMetrics(data) {
+            let totalJaiza = 0, totalVisits = 0;
+            data.forEach(row => {
+                if (row['Status'] === 'Jaiza') totalJaiza++;
+                else if (row['Status'] === 'Visit') totalVisits++;
+            });
+            return { totalJaiza, totalVisits };
+        }
+
+        function calculateTop3(data) {
+            return data.filter(r => r['Fisad'] !== null && !isNaN(parseFloat(r['Fisad'])))
+                       .sort((a, b) => parseFloat(b['Fisad']) - parseFloat(a['Fisad']))
+                       .slice(0, 3);
+        }
+
+        function updateDashboard(dataToDisplay) {
+            const metrics = calculateMetrics(dataToDisplay);
+            document.getElementById('total-jaiza').innerText = metrics.totalJaiza;
+            document.getElementById('total-visits').innerText = metrics.totalVisits;
+
+            const allJaizaFisad = mainData.filter(r => r['Fisad'] !== null && !isNaN(parseFloat(r['Fisad']))).map(r => parseFloat(r['Fisad']));
+            document.getElementById('highest-jaiza').innerText = allJaizaFisad.length ? Math.max(...allJaizaFisad) + "%" : "0%";
+            document.getElementById('average-jaiza').innerText = allJaizaFisad.length ? (allJaizaFisad.reduce((a, b) => a + b, 0) / allJaizaFisad.length).toFixed(2) + "%" : "0%";
+
+            const top3Data = calculateTop3(dataToDisplay);
+            document.getElementById('top-3-list').innerHTML = top3Data.map(item => `<li><a href="#" class="text-green-600 font-medium">${item['Jamia'] || ''}</a> (${item['Fisad'] || ''}%) - ${item['Talimi Zimmedar'] || ''}, ${item['Region'] || ''}</li>`).join('');
+
+            const zimmedarFilter = document.getElementById('zimmedar-filter');
+            const regionFilter = document.getElementById('region-filter');
+            const monthFilter = document.getElementById('month-filter');
+
+            if (zimmedarFilter.options.length <= 1) {
+                [...new Set(mainData.map(item => item['Talimi Zimmedar']).filter(Boolean))].forEach(z => zimmedarFilter.add(new Option(z, z)));
+            }
+            if (regionFilter.options.length <= 1) {
+                [...new Set(mainData.map(item => item['Region']).filter(Boolean))].forEach(r => regionFilter.add(new Option(r, r)));
+            }
+            if (monthFilter.options.length <= 1) {
+                getMonthsFromData(mainData).forEach(m => monthFilter.add(new Option(m, m)));
+            }
+        }
+
+        function applyFilters() {
+            const zimmedarValue = document.getElementById('zimmedar-filter').value;
+            const regionValue = document.getElementById('region-filter').value;
+            const monthValue = document.getElementById('month-filter').value;
+
+            let filteredData = mainData;
+            if (zimmedarValue !== 'all') filteredData = filteredData.filter(r => r['Talimi Zimmedar'] === zimmedarValue);
+            if (regionValue !== 'all') filteredData = filteredData.filter(r => r['Region'] === regionValue);
+            if (monthValue !== 'all') filteredData = filteredData.filter(r => r['Month'] === monthValue);
+
+            updateDashboard(filteredData);
+        }
+
+        document.getElementById('zimmedar-filter').addEventListener('change', applyFilters);
+        document.getElementById('region-filter').addEventListener('change', applyFilters);
+        document.getElementById('month-filter').addEventListener('change', applyFilters);
+    </script>
 </body>
 </html>
